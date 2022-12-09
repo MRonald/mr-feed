@@ -1,33 +1,71 @@
+import { useState } from 'react';
 import { Avatar } from './Avatar';
 import { Comment } from './Comment';
+import { format, formatDistanceToNow } from 'date-fns';
+import ptBR from 'date-fns/locale/pt-BR';
+
 import styles from './Post.module.css';
 
-export function Post() {
+export function Post(props) {
+    const [comments, setComments] = useState(['comentário teste']);
+    const [newCommentText, setNewCommentText] = useState('');
+
+    const publishedDateFormatted = format(props.publishedAt, "d 'de' LLLL 'às' HH:mm'h'", {
+        locale: ptBR,
+    });
+
+    const publishedDateRelativeToNow = formatDistanceToNow(props.publishedAt, {
+        locale: ptBR,
+        addSuffix: true,
+    });
+
+    function handleNewCommentChange() {
+        setNewCommentText(event.target.value);
+    }
+
+    function handleCreateNewComment() {
+        event.preventDefault();
+        
+        setComments([...comments, newCommentText]);
+
+        setNewCommentText('');
+    }
+
     return (
         <article className={styles.post}>
             <header>
                 <div className={styles.author}>
-                    <Avatar src="https://github.com/MRonald.png" />
+                    <Avatar src={props.author.avatarUrl} />
 
                     <div className={styles.authorInfo}>
-                        <strong>Michael Ronald</strong>
-                        <span>Web Developer</span>
+                        <strong>{props.author.name}</strong>
+                        <span>{props.author.role}</span>
                     </div>
                 </div>
 
-                <time title="11 de Maio às 08:13h" dateTime="2022-12-03 08:13:30">Publicado há 1h</time>
+                <time title={publishedDateFormatted} dateTime={props.publishedAt.toISOString()}>
+                    {publishedDateRelativeToNow}
+                </time>
             </header>
 
             <div className={styles.content}>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusamus libero magnam molestiae molestias sint adipisci nam</p>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusamus libero magnam molestiae molestias sint adipisci nam Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum adipisci veniam quod. Necessitatibus eos quisquam hic quos amet blanditiis? Veritatis temporibus alias, voluptatum ab aspernatur debitis placeat laudantium exercitationem quasi?</p>
+                {props.content.map((line, index) => {
+                    if (line.type === 'paragraph') {
+                        return <p key={line.content + index}>{line.content}</p>;
+                    } else if (line.type === 'link') {
+                        return <p key={line.content + index}><a href="#">{line.content}</a></p>;
+                    }
+                })}
             </div>
 
-            <form className={styles.commentForm}>
+            <form onSubmit={handleCreateNewComment} className={styles.commentForm}>
                 <strong>Deixe seu feedback</strong>
 
-                <textarea 
+                <textarea
+                    name="comment"
                     placeholder="Escreva seu comentário"
+                    value={newCommentText}
+                    onChange={handleNewCommentChange}
                 />
 
                 <footer>
@@ -36,9 +74,7 @@ export function Post() {
             </form>
 
             <div className={styles.commentList}>
-                <Comment />
-                <Comment />
-                <Comment />
+                {comments.map(comment => <Comment key={comment} content={comment} />)}
             </div>
         </article>
     );

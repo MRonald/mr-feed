@@ -2,7 +2,7 @@ import { ThumbsUp, Trash } from 'phosphor-react';
 import { Avatar } from './Avatar';
 import styles from './Comment.module.css';
 
-export function Comment() {
+export function Comment(props) {
     return (
         <div className={styles.comment}>
             <Avatar withoutBorder src="https://github.com/MRonald.png" />
@@ -18,7 +18,7 @@ export function Comment() {
                             <Trash size={24} />
                         </button>
                     </header>
-                    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Explicabo quaerat minus suscipit commodi rerum magni ipsam earum tempora, nobis natus id quis provident quam reiciendis animi quod expedita obcaecati! Eaque.</p>
+                    <p>{props.content}</p>
                 </div>
                 <footer>
                     <button>
