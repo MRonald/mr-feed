@@ -23,7 +23,7 @@ const posts = [
         content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusamus libero magnam molestiae molestias sint adipisci nam Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum adipisci veniam quod. Necessitatibus eos quisquam hic quos amet'
       },
     ],
-    publishedAt: new Date('2022-12-06 10:52:16'),
+    publishedAt: new Date('2022-12-09 09:00:16'),
   },
   {
     id: 2,
@@ -42,7 +42,7 @@ const posts = [
         content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusamus libero magnam molestiae molestias sint adipisci nam Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum adipisci veniam quod. Necessitatibus eos quisquam hic quos amet blanditiis? Veritatis temporibus alias, voluptatum ab aspernatur debitis placeat laudantium exercitationem quasi?'
       },
     ],
-    publishedAt: new Date('2022-12-06 07:52:16'),
+    publishedAt: new Date('2022-12-09 07:52:16'),
   },
 ];
 
