@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { ChangeEvent, FormEvent, InvalidEvent, useState } from 'react';
 import { Avatar } from './Avatar';
 import { Comment } from './Comment';
 import { format, formatDistanceToNow } from 'date-fns';
@@ -6,25 +6,42 @@ import ptBR from 'date-fns/locale/pt-BR';
 
 import styles from './Post.module.css';
 
-export function Post(props) {
+interface Author {
+    name: string;
+    role: string;
+    avatarUrl: string;
+}
+
+interface Content {
+    type: 'paragraph' | 'link';
+    content: string;
+}
+
+interface PostProps {
+    author: Author;
+    publishedAt: Date;
+    content: Content[];
+}
+
+export function Post({ author, publishedAt, content }: PostProps) {
     const [comments, setComments] = useState(['comentário teste']);
     const [newCommentText, setNewCommentText] = useState('');
 
-    const publishedDateFormatted = format(props.publishedAt, "d 'de' LLLL 'às' HH:mm'h'", {
+    const publishedDateFormatted = format(publishedAt, "d 'de' LLLL 'às' HH:mm'h'", {
         locale: ptBR,
     });
 
-    const publishedDateRelativeToNow = formatDistanceToNow(props.publishedAt, {
+    const publishedDateRelativeToNow = formatDistanceToNow(publishedAt, {
         locale: ptBR,
         addSuffix: true,
     });
 
-    function handleNewCommentChange() {
+    function handleNewCommentChange(event: ChangeEvent<HTMLTextAreaElement>) {
         event.target.setCustomValidity('');
         setNewCommentText(event.target.value);
     }
 
-    function handleCreateNewComment() {
+    function handleCreateNewComment(event: FormEvent) {
         event.preventDefault();
         
         setComments([...comments, newCommentText]);
@@ -32,7 +49,7 @@ export function Post(props) {
         setNewCommentText('');
     }
 
-    function deleteComment(commentToDelete) {
+    function deleteComment(commentToDelete: string) {
         const commentsWithoutDeleteOne = comments.filter(comment => {
             return comment !== commentToDelete;
         });
@@ -40,7 +57,7 @@ export function Post(props) {
         setComments(commentsWithoutDeleteOne);
     }
 
-    function handleNewCommentInvalid() {
+    function handleNewCommentInvalid(event: InvalidEvent<HTMLTextAreaElement>) {
         event.target.setCustomValidity('Este campo é obrigatório');
     }
 
@@ -50,21 +67,21 @@ export function Post(props) {
         <article className={styles.post}>
             <header>
                 <div className={styles.author}>
-                    <Avatar src={props.author.avatarUrl} />
+                    <Avatar src={author.avatarUrl} />
 
                     <div className={styles.authorInfo}>
-                        <strong>{props.author.name}</strong>
-                        <span>{props.author.role}</span>
+                        <strong>{author.name}</strong>
+                        <span>{author.role}</span>
                     </div>
                 </div>
 
-                <time title={publishedDateFormatted} dateTime={props.publishedAt.toISOString()}>
+                <time title={publishedDateFormatted} dateTime={publishedAt.toISOString()}>
                     {publishedDateRelativeToNow}
                 </time>
             </header>
 
             <div className={styles.content}>
-                {props.content.map((line, index) => {
+                {content.map((line, index) => {
                     if (line.type === 'paragraph') {
                         return <p key={line.content + index}>{line.content}</p>;
                     } else if (line.type === 'link') {
